@@ -1,10 +1,10 @@
 workflow "Build my extension" {
-  on = "release"
   resolves = ["Publish AIX"]
+  on = "release"
 }
 
 action "Build AIX" {
-  uses = "./"
+  uses = "pavi2410/AIX-Action@master"
 }
 
 action "Publish AIX" {
