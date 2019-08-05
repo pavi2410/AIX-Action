@@ -1,15 +1,15 @@
 workflow "Build my extension" {
   on = "release"
-  resolves = ["JasonEtco/upload-to-release@master"]
+  resolves = ["Publish AIX"]
 }
 
 action "Build AIX" {
   uses = "./"
 }
 
-action "JasonEtco/upload-to-release@master" {
+action "Publish AIX" {
   uses = "JasonEtco/upload-to-release@master"
   needs = ["Build AIX"]
   secrets = ["GITHUB_TOKEN"]
-  args = "/github/workspace/appinventor-sources/appinventor/components/build/extensions/tk.pavi2410.aix"
+  args = "/github/workspace/appinventor-sources/appinventor/components/build/extensions/tk.pavi2410.aix application/zip"
 }
