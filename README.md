@@ -30,6 +30,8 @@ A GitHub Action that builds App Inventor Extensions using modern composite actio
   with:
     source-dir: 'src'
     package-name: 'com.yourname.extension'
+    appinventor-repo: 'mit-cml/appinventor-sources'
+    appinventor-branch: 'master'
 
 - name: Upload Extension
   uses: actions/upload-artifact@v4
@@ -44,6 +46,8 @@ A GitHub Action that builds App Inventor Extensions using modern composite actio
 |-------|-------------|----------|---------|
 | `source-dir` | Path to extension source files | No | `src` |
 | `package-name` | Package name of the extension (e.g., com.yourname.extension) | Yes | - |
+| `appinventor-repo` | App Inventor sources repository | No | `mit-cml/appinventor-sources` |
+| `appinventor-branch` | App Inventor sources branch | No | `master` |
 
 ## Outputs
 

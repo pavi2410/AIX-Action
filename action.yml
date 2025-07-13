@@ -12,6 +12,14 @@ inputs:
   package-name:
     description: 'Package name of the extension (e.g. me.pavi2410)'
     required: true
+  appinventor-repo:
+    description: 'App Inventor sources repository'
+    required: false
+    default: 'mit-cml/appinventor-sources'
+  appinventor-branch:
+    description: 'App Inventor sources branch'
+    required: false
+    default: 'master'
 
 outputs:
   extension-path:
@@ -36,7 +44,8 @@ runs:
     - name: Clone App Inventor sources
       uses: actions/checkout@v4
       with:
-        repository: mit-cml/appinventor-sources
+        repository: ${{ inputs.appinventor-repo }}
+        ref: ${{ inputs.appinventor-branch }}
         path: appinventor-sources
         submodules: true
         
