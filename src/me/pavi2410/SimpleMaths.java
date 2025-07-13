@@ -1,4 +1,4 @@
-package tk.pavi2410; // package of the extension will be "tk.pavi2410.SimpleMaths"
+package me.pavi2410; // package of the extension will be "me.pavi2410.SimpleMaths"
 
 // Only these imports are required to interact with Kodular
 import com.google.appinventor.components.annotations.*;

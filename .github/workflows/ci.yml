@@ -4,7 +4,7 @@ on:
     tags:
       - 'v*'
 
-name: Build and Release AIX Extension
+name: Build and Release
 
 jobs:
   build-and-release:
@@ -17,21 +17,21 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Build AIX
+        id: build
         uses: pavi2410/AIX-Action@main
+        with:
+          package-name: me.pavi2410
         
       - name: Check build output
-        env:
-          EXTENSIONS_DIR: appinventor-sources/appinventor/components/build/extensions
-          AIX_FILE: tk.pavi2410.aix
         run: |
-          ls -la $EXTENSIONS_DIR
-          file $EXTENSIONS_DIR/$AIX_FILE
+          ls -la $(dirname ${{ steps.build.outputs.extension-path }})
+          file ${{ steps.build.outputs.extension-path }}
         
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: appinventor-sources/appinventor/components/build/extensions/tk.pavi2410.aix
+          files: ${{ steps.build.outputs.extension-path }}
           name: Release ${{ github.ref_name }}
           draft: true
           prerelease: false

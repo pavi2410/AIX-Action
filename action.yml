@@ -1,0 +1,54 @@
+name: 'App Inventor Extension Builder'
+description: 'Builds App Inventor extensions'
+branding:
+  icon: 'terminal'
+  color: 'green'
+
+inputs:
+  source-dir:
+    description: 'Path to extension source files'
+    required: false
+    default: 'src'
+  package-name:
+    description: 'Package name of the extension (e.g. me.pavi2410)'
+    required: true
+
+outputs:
+  extension-path:
+    description: 'Path to the built .aix file'
+    value: ${{ steps.build.outputs.extension-path }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Java 8
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '8'
+        
+    - name: Install dependencies
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ant git
+        
+    - name: Clone App Inventor sources
+      uses: actions/checkout@v4
+      with:
+        repository: mit-cml/appinventor-sources
+        path: appinventor-sources
+        submodules: true
+        
+    - name: Copy extension source
+      shell: bash
+      run: |
+        cp -r ${{ inputs.source-dir }}/** appinventor-sources/appinventor/components/src/
+        
+    - name: Build extensions
+      id: build
+      shell: bash
+      run: |
+        cd appinventor-sources/appinventor/
+        ant extensions
+        echo "extension-path=appinventor-sources/appinventor/components/build/extensions/${{ inputs.package-name }}.aix" >> $GITHUB_OUTPUT
