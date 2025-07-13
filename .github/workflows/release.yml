@@ -1,30 +1,37 @@
-on: push
-name: Build my extension
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+
+name: Build and Release AIX Extension
+
 jobs:
-  buildAIX:
-    name: Build AIX
-    runs-on: ubuntu-18.04
+  build-and-release:
+    name: Build AIX and Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-    - uses: actions/checkout@master
-    - name: Build AIX
-      uses: pavi2410/AIX-Action@master
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1.0.0
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Build AIX
+        uses: pavi2410/AIX-Action@main
+        
+      - name: Check build output
+        env:
+          EXTENSIONS_DIR: appinventor-sources/appinventor/components/build/extensions
+          AIX_FILE: tk.pavi2410.aix
+        run: |
+          ls -la $EXTENSIONS_DIR
+          file $EXTENSIONS_DIR/$AIX_FILE
+        
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: appinventor-sources/appinventor/components/build/extensions/tk.pavi2410.aix
+          name: Release ${{ github.ref_name }}
           draft: true
           prerelease: false
-    - name: Upload Release Asset
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: appinventor-sources/appinventor/components/build/extensions/tk.pavi2410.aix
-        asset_name: tk.pavi2410.aix
-        asset_content_type: application/zip
